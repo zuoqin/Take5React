@@ -29,6 +29,7 @@ const Text = require('Text');
 const TextInput = require('TextInput');
 const TouchableHighlight = require('TouchableHighlight');
 const View = require('View');
+const Alert = require('Alert');
 const UIExplorerActions = require('./UIExplorerActions');
 const UIExplorerStatePersister = require('./UIExplorerStatePersister');
 
@@ -63,15 +64,49 @@ type Props = {
 class UIExplorerExampleList extends React.Component {
   props: Props
 
+
+  constructor(props, context) {
+    super(props, context);
+    var arr = [ {Body: "",
+      Introduction: "jhkjkjkja ...",Published: "01/26/2014 - 13:23",
+      Reference: "xhcmdlLWNhc2gtd2l0aGRyYXdhbC1saW1pdA==",
+      Title: "Furious Backlash Forces HSBC To Scrap Large Cash Withdrawal Limit",
+      Updated: "2016-03-08T15:55:12.2058442+08:00"} ];
+    this.isUpdated = false;
+    this.ds = ds;
+    this.state = {
+      isLoading: false,
+      dataSource: this.ds.cloneWithRowsAndSections({
+        components: [],//this.props.list.ComponentExamples,
+        apis: [],//this.props.list.APIExamples,
+      }),
+      resultsData: this.ds.cloneWithRowsAndSections({
+        components: this.props.list.ComponentExamples,
+        apis: this.props.list.APIExamples,
+      }),
+    };
+  };
+
+  componentDidMount() {
+    this.isUpdated = true;
+    this.getMenus();    
+  };
+
+
   render(): ?ReactElement<any> {
     const filterText = this.props.persister.state.filter;
     const filterRegex = new RegExp(String(filterText), 'i');
     const filter = (example) => filterRegex.test(example.module.title);
 
+
+    console.log(this.props.persister.state.filter);
+
     const dataSource = ds.cloneWithRowsAndSections({
       components: this.props.list.ComponentExamples.filter(filter),
       apis: this.props.list.APIExamples.filter(filter),
     });
+
+
     return (
       <View style={[styles.listContainer, this.props.style]}>
         {this._renderTitleRow()}
@@ -84,7 +119,7 @@ class UIExplorerExampleList extends React.Component {
           enableEmptySections={true}
           keyboardShouldPersistTaps={true}
           automaticallyAdjustContentInsets={false}
-          keyboardDismissMode="on-drag"
+          keyboardDismissMode='on-drag'
         />
       </View>
     );
@@ -95,8 +130,8 @@ class UIExplorerExampleList extends React.Component {
       return null;
     }
     return this._renderRow(
-      'UIExplorer',
-      'React Native Examples',
+      'T5P HRMS',
+      'Now you can',
       'home_key',
       () => {
         this.props.onNavigate(
@@ -131,9 +166,11 @@ class UIExplorerExampleList extends React.Component {
 
   _renderSectionHeader(data: any, section: string): ?ReactElement<any> {
     return (
-      <Text style={styles.sectionHeader}>
-        {section.toUpperCase()}
-      </Text>
+      <View>
+        <Text style={styles.sectionHeader}>
+          {section.toUpperCase()}
+        </Text>
+      </View>
     );
   }
 
@@ -163,6 +200,92 @@ class UIExplorerExampleList extends React.Component {
       </View>
     );
   }
+
+
+  setPageGetResult(responseData){
+
+    const filterText = this.props.persister.state.filter;
+    const filterRegex = new RegExp(String(filterText), 'i');
+    const filter = (example) => filterRegex.test(example.module.title);
+
+    //this._showAlert(responseData.length.toString(), "responseData count");
+    var menus = [];
+    for(var i=0;i<responseData.length;i++){
+      var newMenu =         {
+          key: responseData[i].name,
+          module: null
+        };
+
+      for(var j=0; j< this.props.list.ComponentExamples.length; j++){
+        if(this.props.list.ComponentExamples[j].key === newMenu.key){
+          newMenu.module = this.props.list.ComponentExamples[j].module;
+        }
+      }
+      console.log(newMenu);
+      menus.push(newMenu);
+    }
+
+    //this.props.list.ComponentExamples.filter(filter);
+    //menus.push( this.props.list.ComponentExamples.filter(filter) );
+
+    //this._showAlert(menus.length.toString(), "Menus count");
+    this.state.resultsData = this.getDataSource(menus);
+  };
+
+  _showAlert(title, message) {
+    console.log('1111111Ask me later pressed');
+    // Works on both iOS and Android
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]
+    )    
+  }  
+
+  getMenus(){
+
+    var settings = {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer token',
+      },      
+    };      
+    fetch("http://192.168.123.162:3000/api/sysmenu2", settings)
+      .then((response) => response.json())
+      .then((responseData) => {
+          this.setPageGetResult(responseData);
+          console.log(responseData);
+        })
+      .catch((error) => {
+        this._showAlert('Download', 'Download page failed with error: ' + error.message);
+        this.state.isLoading = false;
+        this.state.resultsData = this.setPageGetResult([]);//this.getDataSource([])
+      })
+  }
+
+  getDataSource(menus: Array<any>): ListView.DataSource{
+    this.isUpdated = false;
+
+    this.props.list.ComponentExamples = menus;
+    //this.props.list.APIExamples = ,
+
+
+
+
+    this.setState({dataSource: this.ds.cloneWithRowsAndSections({
+      components: menus,
+      apis: this.props.list.APIExamples
+    }) });
+    this.isUpdated = true;
+    return this.state.dataSource.cloneWithRowsAndSections({
+      components: menus,
+      apis: this.props.list.APIExamples
+    });
+  }  
 
   _handleRowPress(exampleKey: string): void {
     this.props.onNavigate(UIExplorerActions.ExampleAction(exampleKey));

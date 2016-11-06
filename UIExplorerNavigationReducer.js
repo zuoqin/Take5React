@@ -103,7 +103,9 @@ function StackReducer({initialState, getReducerForState, getPushedReducerForActi
 
 const UIExplorerStackReducer = StackReducer({
   getPushedReducerForAction: (action, lastState) => {
-    if (action.type === 'UIExplorerExampleAction' && UIExplorerList.Modules[action.openExample]) {
+    if (action.type === 'UIExplorerExampleAction' && 
+      UIExplorerList.Modules !== undefined &&
+      UIExplorerList.Modules[action.openExample]) {
       if (lastState.routes.find(route => route.key === action.openExample)) {
         // The example is already open, we should avoid pushing examples twice
         return null;
@@ -150,7 +152,7 @@ function UIExplorerNavigationReducer(lastState: ?UIExplorerNavigationState, acti
       externalExample: null,
     };
   }
-  if (action.type === 'UIExplorerExampleAction') {
+  if (action.type === 'UIExplorerExampleAction' && UIExplorerList.Modules !== undefined) {
     const ExampleModule = UIExplorerList.Modules[action.openExample];
     if (ExampleModule && ExampleModule.external) {
       return {
