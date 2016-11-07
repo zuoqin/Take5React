@@ -34,7 +34,7 @@ function StateTitleMap(route: NavigationRoute): string {
 	    return UIExplorerList.Modules[route.key].title;
 	  }
 	  if (route.key === 'AppList') {
-	    return 'UIExplorer';
+	    return 'Take5 HRMS';
 	  }
 
   }

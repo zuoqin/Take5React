@@ -42,6 +42,10 @@ const UIManager = require('UIManager');
 const URIActionMap = require('./URIActionMap');
 const View = require('View');
 
+const Alert = require('Alert');
+const Text = require('Text');
+const Login = require('./Login');
+
 import type {UIExplorerNavigationState} from './UIExplorerNavigationReducer';
 
 UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -62,6 +66,7 @@ class T5PHRMS extends React.Component {
   state: State;
   constructor(props: Props) {
     super(props);
+    
     this._handleAction = this._handleAction.bind(this);
     this._renderDrawerContent = this._renderDrawerContent.bind(this);
   }
@@ -72,19 +77,29 @@ class T5PHRMS extends React.Component {
 
   componentDidMount() {
     Linking.getInitialURL().then((url) => {
+      AsyncStorage.removeItem('UIExplorerAppState');
+      //AsyncStorage.setItem('UIExplorerAppState', JSON.stringify({isLoggedIn: false}));
       AsyncStorage.getItem('UIExplorerAppState', (err, storedString) => {
         const exampleAction = URIActionMap(this.props.exampleFromAppetizeParams);
         const urlAction = URIActionMap(url);
         const launchAction = exampleAction || urlAction;
         if (err || !storedString) {
           const initialAction = launchAction || {type: 'InitialAction'};
+     
           this.setState(UIExplorerNavigationReducer(null, initialAction));
+          this.setState({isLoggedIn: false});
           return;
         }
         const storedState = JSON.parse(storedString);
         if (launchAction) {
+          if( storedState.isLoggedIn === undefined || storedState.isLoggedIn === null){
+            storedState.isLoggedIn = false;
+          }          
           this.setState(UIExplorerNavigationReducer(storedState, launchAction));
           return;
+        }
+        if( storedState.isLoggedIn === undefined ){
+          storedState.isLoggedIn = false;
         }
         this.setState(storedState);
       });
@@ -93,9 +108,17 @@ class T5PHRMS extends React.Component {
 
   render() {
     if (!this.state) {
+      <View style={styles.drawerContentWrapper}>
+      <Text> kjhjhkjhkjh </Text>
+
+      </View>
       return null;
     }
     return (
+      <View style={styles.drawerContentWrapper}>
+     
+
+
       <DrawerLayoutAndroid
         drawerPosition={DrawerLayoutAndroid.positions.Left}
         drawerWidth={Dimensions.get('window').width - DRAWER_WIDTH_LEFT}
@@ -110,23 +133,87 @@ class T5PHRMS extends React.Component {
         renderNavigationView={this._renderDrawerContent}
         statusBarBackgroundColor="#589c90">
         {this._renderApp()}
-      </DrawerLayoutAndroid>
+      </DrawerLayoutAndroid>      
+      </View>
+
+
+
     );
   }
 
   _renderDrawerContent() {
-    return (
-      <View style={styles.drawerContentWrapper}>
-        <UIExplorerExampleList
-          list={UIExplorerList}
-          displayTitleRow={true}
-          disableSearch={false}
-          onNavigate={this._handleAction}
-        />
-      </View>
+    //console.log('inside render Drawer');
+    if(this.state.isLoggedIn === true){
+      return(
+        <View style={styles.drawerContentWrapper}>
+          
+          <UIExplorerExampleList
+            isLoggedIn={this.state.isLoggedIn}
+            token = {this.state.token}
+            list={UIExplorerList}
+            displayTitleRow={true}
+            disableSearch={false}
+            onNavigate={this._handleAction}
+          />
+        </View>);
+    }else{
+      return
+        (<View style={styles.drawerContentWrapper}>
+          <Text> 'Please login to the system' </Text>
+        </View>);
+    }
+  };
+
+  setLoginUser(responsedata){
+    //this._showAlert('Download', 'Logged in successfull: ' + responsedata.access_token);
+
+    this.setState(
+      {
+        isLoggedIn: true,
+        token: responsedata.access_token
+      },
+      () => AsyncStorage.setItem('UIExplorerAppState', JSON.stringify(this.state))
     );
+    //this._renderDrawerContent();
+    
+  };
+
+  _showAlert(title, message) {
+    //console.log('1111111Ask me later pressed');
+    // Works on both iOS and Android
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]
+    )    
   }
 
+  
+  onLogin(){
+    var settings = {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=password&username=nacho&password=password',
+    };      
+    fetch("http://192.168.123.145:3000/token", settings)
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setLoginUser(responseData);
+        console.log(responseData);
+      })
+      .catch((error) => {
+        this._showAlert('Login', 'Logged in with error: ' + error.message);
+        this.state.isLoading = false;
+        this.state.resultsData = this.setPageGetResult([]);//this.getDataSource([])
+      })    
+  }
+
+  
   _renderApp() {
     const {
       externalExample,
@@ -145,7 +232,7 @@ class T5PHRMS extends React.Component {
     }
     const title = UIExplorerStateTitleMap(stack.routes[stack.index]);
     const index = stack.routes.length <= 1 ?  1 : stack.index;
-
+    
     if (stack && stack.routes[index]) {
       const {key} = stack.routes[index];
       const ExampleModule = UIExplorerList.Modules[key];
@@ -165,22 +252,40 @@ class T5PHRMS extends React.Component {
         </View>
       );
     }
-    return (
-      <View style={styles.container}>
-        <ToolbarAndroid
-          logo={require('./ic_launcher.png')}
-          navIcon={require('./ic_create_black.png')}
-          onIconClicked={() => this.drawer.openDrawer()}
-          style={styles.toolbar}
-          title={title}
-        />
+
+    if(this.state.isLoggedIn === true){
+      return (
+        <View style={styles.container}>
+          <ToolbarAndroid
+            logo={require('./ic_launcher.png')}
+            navIcon={require('./ic_create_black.png')}
+            onIconClicked={() => this.drawer.openDrawer()}
+            style={styles.toolbar}
+            title={title}
+          />
         <UIExplorerExampleList
-          onNavigate={this._handleAction}
-          list={UIExplorerList}
-          {...stack.routes[0]}
+        isLoggedIn={this.state.isLoggedIn}
+        token = {this.state.token}
+        onNavigate={this._handleAction}
+        list={UIExplorerList}
+        {...stack.routes[0]}
         />
-      </View>
-    );
+        </View>)
+    } else{
+      return(  <View style={[styles.listContainer, this.props.style]}>
+
+
+        <Login
+        onLogin = {(event) => {
+          this.onLogin(event);
+          
+          console.log('on login in index.android');
+        }}
+
+
+        />        
+      </View>)
+    };
   }
 
   _handleAction(action: Object): boolean {
@@ -229,9 +334,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
-
-//AppRegistry.registerComponent('UIExplorerApp', () => UIExplorerApp);
-
-//module.exports = UIExplorerApp;
 
 AppRegistry.registerComponent('T5PHRMS', () => T5PHRMS);

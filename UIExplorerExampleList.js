@@ -23,6 +23,7 @@
 'use strict';
 
 const ListView = require('ListView');
+const AsyncStorage = require('AsyncStorage');
 const React = require('react');
 const StyleSheet = require('StyleSheet');
 const Text = require('Text');
@@ -89,7 +90,9 @@ class UIExplorerExampleList extends React.Component {
 
   componentDidMount() {
     this.isUpdated = true;
-    this.getMenus();    
+    if(this.props.isLoggedIn === true){
+       this.getMenus();
+    }
   };
 
 
@@ -100,18 +103,19 @@ class UIExplorerExampleList extends React.Component {
 
 
     console.log(this.props.persister.state.filter);
+    var componentsList = this.props.list.ComponentExamples.filter(filter);
 
     const dataSource = ds.cloneWithRowsAndSections({
-      components: this.props.list.ComponentExamples.filter(filter),
+      components: componentsList,
       apis: this.props.list.APIExamples.filter(filter),
     });
 
 
-    return (
-      <View style={[styles.listContainer, this.props.style]}>
-        {this._renderTitleRow()}
-        {this._renderTextInput()}
-        <ListView
+    if(this.props.isLoggedIn === true){
+         return  <View style={[styles.listContainer, this.props.style]}>
+          {this._renderTitleRow()}
+          {this._renderTextInput()}
+          <ListView
           style={styles.list}
           dataSource={dataSource}
           renderRow={this._renderExampleRow.bind(this)}
@@ -120,10 +124,17 @@ class UIExplorerExampleList extends React.Component {
           keyboardShouldPersistTaps={true}
           automaticallyAdjustContentInsets={false}
           keyboardDismissMode='on-drag'
-        />
+          />
+          </View>
+    }
+    else{
+      return  <View style={[styles.listContainer, this.props.style]}>
+      <Text> jjgjhgjhghjg </Text>
       </View>
-    );
-  }
+    }
+      
+  };
+
 
   _renderTitleRow(): ?ReactElement<any> {
     if (!this.props.displayTitleRow) {
@@ -203,11 +214,7 @@ class UIExplorerExampleList extends React.Component {
 
 
   setPageGetResult(responseData){
-
-    const filterText = this.props.persister.state.filter;
-    const filterRegex = new RegExp(String(filterText), 'i');
-    const filter = (example) => filterRegex.test(example.module.title);
-
+    console.log('looping over menus');
     //this._showAlert(responseData.length.toString(), "responseData count");
     var menus = [];
     for(var i=0;i<responseData.length;i++){
@@ -245,44 +252,49 @@ class UIExplorerExampleList extends React.Component {
   }  
 
   getMenus(){
-
-    var settings = {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer token',
-      },      
-    };      
-    fetch("http://192.168.123.162:3000/api/sysmenu2", settings)
-      .then((response) => response.json())
-      .then((responseData) => {
-          this.setPageGetResult(responseData);
-          console.log(responseData);
+    var token = this.props.token;
+    
+    if( token !== undefined && token.length > 0){
+      console.log('provide token in getMenus' + token);
+      var bearer = 'Bearer ' + token;
+      var settings = {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'authorization': bearer,
+        },      
+      };      
+      fetch("http://192.168.123.145:3000/api/sysmenu2", settings)
+        .then((response) => response.json())
+        .then((responseData) => {
+            this.setPageGetResult(responseData);
+            console.log(responseData);
+          })
+        .catch((error) => {
+          this._showAlert('Download', 'Download menus failed with error: ' + error.message);
+          this.state.isLoading = false;
+          this.state.resultsData = this.setPageGetResult([]);//this.getDataSource([])
         })
-      .catch((error) => {
-        this._showAlert('Download', 'Download page failed with error: ' + error.message);
-        this.state.isLoading = false;
-        this.state.resultsData = this.setPageGetResult([]);//this.getDataSource([])
-      })
+    }
   }
 
   getDataSource(menus: Array<any>): ListView.DataSource{
     this.isUpdated = false;
 
     this.props.list.ComponentExamples = menus;
-    //this.props.list.APIExamples = ,
+    this.props.list.APIExamples = [],
 
 
 
 
     this.setState({dataSource: this.ds.cloneWithRowsAndSections({
-      components: menus,
+      components: this.props.list.ComponentExamples,
       apis: this.props.list.APIExamples
     }) });
     this.isUpdated = true;
     return this.state.dataSource.cloneWithRowsAndSections({
-      components: menus,
+      components: this.props.list.ComponentExamples,
       apis: this.props.list.APIExamples
     });
   }  
