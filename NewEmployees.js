@@ -90,7 +90,7 @@ class SearchBar extends Component {
 }
 
 class NewEmployeesListView extends Component {
-  static title = 'NewEmployees';
+  static title = 'New Employees';
   static description = 'New Employees List';
 
 

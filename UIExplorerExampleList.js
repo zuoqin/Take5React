@@ -46,24 +46,14 @@ class UIExplorerExampleList extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    var arr = [ {Body: "",
-      Introduction: "jhkjkjkja ...",Published: "01/26/2014 - 13:23",
-      Reference: "xhcmdlLWNhc2gtd2l0aGRyYXdhbC1saW1pdA==",
-      Title: "Furious Backlash Forces HSBC To Scrap Large Cash Withdrawal Limit",
-      Updated: "2016-03-08T15:55:12.2058442+08:00"} ];
+
     this.isUpdated = false;
     this.ds = ds;
     this.state = {
       isLoading: false,
-      dataSource: this.ds.cloneWithRowsAndSections({
-        components: [],//this.props.list.ComponentExamples,
-        apis: [],//this.props.list.APIExamples,
-      }),
-      resultsData: this.ds.cloneWithRowsAndSections({
-        components: this.props.list.ComponentExamples,
-        apis: this.props.list.APIExamples,
-      }),
+      dataSource: this.ds.cloneWithRowsAndSections({}),
     };
+    this.list={};
   };
 
   componentDidMount() {
@@ -80,13 +70,21 @@ class UIExplorerExampleList extends React.Component {
     const filter = (example) => filterRegex.test(example.module.title);
 
 
-    console.log(this.props.persister.state.filter);
-    var componentsList = this.props.list.ComponentExamples.filter(filter);
 
-    const dataSource = ds.cloneWithRowsAndSections({
-      components: componentsList,
-      apis: this.props.list.APIExamples.filter(filter),
-    });
+    var keys = [];
+    for (var key in this.list) {
+      if (this.list.hasOwnProperty(key)) {
+        keys.push(key);
+      }
+    }
+
+    var filteredList = {};
+
+    for (var i = 0; i < keys.length; i++) {
+        filteredList[keys[i]] = this.list[keys[i]].filter(filter);
+    }
+
+    const dataSource = ds.cloneWithRowsAndSections(filteredList);
 
 
     if(this.props.isLoggedIn === true){
@@ -191,30 +189,65 @@ class UIExplorerExampleList extends React.Component {
   }
 
 
+
+  changeMenuStructure(responseData, menu){
+    var parent = {};
+    if(menu.menulevel !== null && menu.menulevel !== undefined && menu.menulevel !== 0){
+      if(menu.menucode !== null && menu.menucode !== undefined && menu.menucode.length > 0){
+        for(var i=0;i<responseData.length;i++){
+          if(responseData[i].submenu == menu.menucode){
+            parent = responseData[i];
+            break;
+          }
+        }
+        if(parent.menulevel !== null && parent.menulevel !== undefined && parent.menulevel !== 0){
+          menu.parent = this.changeMenuStructure(responseData, parent);
+        }
+        else {
+          if(parent.menulevel !== null && parent.menulevel !== undefined && parent.menulevel === 0){
+            return parent;
+          }
+          else{
+            return '';
+          }
+        } 
+      } else{
+        return '';
+      }
+    } else{
+      return '';
+    }
+  }
+
   setPageGetResult(responseData){
     console.log('looping over menus');
+    this.list = {};
     //this._showAlert(responseData.length.toString(), "responseData count");
-    var menus = [];
     for(var i=0;i<responseData.length;i++){
-      var newMenu =         {
-          key: responseData[i].name,
-          module: null
+      if(responseData[i].menulevel == 0){
+        this.list[responseData[i].name] = [];
+      } else{
+        responseData[i].parent = this.changeMenuStructure(responseData, responseData[i]);
+      }
+    }
+
+
+    for(var i=0;i<responseData.length;i++){
+      var newMenu = {
+          key: responseData[i].urltarget,
+          module: null,
         };
 
       for(var j=0; j< this.props.list.ComponentExamples.length; j++){
         if(this.props.list.ComponentExamples[j].key === newMenu.key){
           newMenu.module = this.props.list.ComponentExamples[j].module;
+          this.list[responseData[i].parent.name].push(newMenu);
         }
       }
       console.log(newMenu);
-      menus.push(newMenu);
     }
 
-    //this.props.list.ComponentExamples.filter(filter);
-    //menus.push( this.props.list.ComponentExamples.filter(filter) );
-
-    //this._showAlert(menus.length.toString(), "Menus count");
-    this.state.resultsData = this.getDataSource(menus);
+    this.setState({dataSource: this.ds.cloneWithRowsAndSections(this.list)});
   };
 
   _showAlert(title, message) {
@@ -243,7 +276,7 @@ class UIExplorerExampleList extends React.Component {
           'authorization': bearer,
         },      
       };      
-      fetch("http://192.168.123.33:3000/api/sysmenu2", settings)
+      fetch("http://192.168.123.33:3000/api/sysmenu", settings)
         .then((response) => response.json())
         .then((responseData) => {
             this.setPageGetResult(responseData);

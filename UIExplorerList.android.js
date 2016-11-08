@@ -7,7 +7,7 @@ export type UIExplorerExample = {
 
 const ComponentExamples: Array<UIExplorerExample> = [
   {
-    key: 'NewEmployees',
+    key: 'newemplist',
     module: require('./NewEmployees'),
   },
   {
