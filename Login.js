@@ -107,6 +107,7 @@ class Login extends React.Component {
           Enter user name:
         </Text>
         <TextInput
+          defaultValue='nacho'
           autoCapitalize='none'
           autoCorrect={false}
           placeholder='Login name...'
@@ -122,6 +123,7 @@ class Login extends React.Component {
           Enter password:
         </Text>
         <TextInput
+          defaultValue='111'
           secureTextEntry ={true}
           autoCapitalize='none'
           autoCorrect={false}

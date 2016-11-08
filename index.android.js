@@ -43,7 +43,8 @@ class T5PHRMS extends React.Component {
   state: State;
   constructor(props: Props) {
     super(props);
-    
+    this.username='nacho';
+    this.password='111';
     this._handleAction = this._handleAction.bind(this);
     this._renderDrawerContent = this._renderDrawerContent.bind(this);
   }
@@ -215,7 +216,7 @@ class T5PHRMS extends React.Component {
     const index = stack.routes.length <= 1 ?  1 : stack.index;
     
     if (stack && stack.routes[index]) {
-      const {key, onNavigate} = stack.routes[index];
+      const {key, passProps} = stack.routes[index];
       const ExampleModule = UIExplorerList.Modules[key];
       return (
         <View style={styles.container}>
@@ -228,7 +229,7 @@ class T5PHRMS extends React.Component {
           />
           <UIExplorerExampleContainer
             module={ExampleModule}
-            onNavigate = {onNavigate}
+            passProps = {passProps}
             ref={(example) => { this._exampleRef = example; }}
           />
         </View>

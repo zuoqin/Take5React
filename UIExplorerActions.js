@@ -42,11 +42,11 @@ function ExampleListWithFilter(filter: ?string): UIExplorerListWithFilterAction 
   };
 }
 
-function ExampleAction(openExample: string, onNavigate: Function): UIExplorerExampleAction {
+function ExampleAction(openExample: string, passProps): UIExplorerExampleAction {
   return {
     type: 'UIExplorerExampleAction',
     openExample,
-    onNavigate,
+    passProps,
   };
 }
 

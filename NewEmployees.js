@@ -206,7 +206,13 @@ class NewEmployeesListView extends Component {
   };
 
   selectMediaItem(employeeItem) {
-    this.props.onNavigate(UIExplorerActions.ExampleAction('NewEmployeeDetail', this.props.onNavigate));
+
+    var props = {onNavigate: this.props.passProps.onNavigate,
+      empid: employeeItem.empid,
+      birthday: employeeItem.birthday,
+      empname: employeeItem.empname
+    }
+    this.props.passProps.onNavigate(UIExplorerActions.ExampleAction('NewEmployeeDetail', props));
   };
 
   _showAlert(title, message) {

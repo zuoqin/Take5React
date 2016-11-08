@@ -278,7 +278,8 @@ class UIExplorerExampleList extends React.Component {
   }  
 
   _handleRowPress(exampleKey: string): void {
-    this.props.onNavigate(UIExplorerActions.ExampleAction(exampleKey, this.props.onNavigate));
+    var props = {onNavigate: this.props.onNavigate};
+    this.props.onNavigate(UIExplorerActions.ExampleAction(exampleKey, props));
   }
 }
 
