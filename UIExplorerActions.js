@@ -29,7 +29,8 @@ export type UIExplorerListWithFilterAction = {
 
 export type UIExplorerExampleAction = {
   type: 'UIExplorerExampleAction',
-  openExample: string;
+  openExample: string,
+  onNavigate: Function;
 };
 
 export type UIExplorerAction = UIExplorerListWithFilterAction | UIExplorerExampleAction;
@@ -41,10 +42,11 @@ function ExampleListWithFilter(filter: ?string): UIExplorerListWithFilterAction 
   };
 }
 
-function ExampleAction(openExample: string): UIExplorerExampleAction {
+function ExampleAction(openExample: string, onNavigate: Function): UIExplorerExampleAction {
   return {
     type: 'UIExplorerExampleAction',
     openExample,
+    onNavigate,
   };
 }
 

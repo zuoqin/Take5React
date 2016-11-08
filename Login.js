@@ -95,38 +95,57 @@ class Login extends React.Component {
   render() {
     //var color = this.state.selectedValue;
     return (
-      <View>
+      <View style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 600,}}
+      >
+        <Text
+          style={{width: 250, height: 30, backgroundColor: 'powderblue'}}>
+          Enter user name:
+        </Text>
         <TextInput
           autoCapitalize='none'
           autoCorrect={false}
           placeholder='Login name...'
           enablesReturnKeyAutomatically={true}
-          style={mystyles.listView.searchBarInput}
+          style={{width: 250, height: 50, backgroundColor: 'white'}}
           onChange={this.props.onUserNameChange}
           onEndEditing={this.props.onEndUserNameEditing}
-          onSubmitEditing={this.props.onSubmitEditing}
-        />      
+          onSubmitEditing={this.props.onSubmitUser}
+        />
 
+        <Text
+          style={{width: 250, height: 30, backgroundColor: 'powderblue'}}>
+          Enter password:
+        </Text>
         <TextInput
+          secureTextEntry ={true}
           autoCapitalize='none'
           autoCorrect={false}
           placeholder='password...'
           enablesReturnKeyAutomatically={true}
-          style={mystyles.listView.searchBarInput}
+          style={{width: 250, height: 50, backgroundColor: 'white'}}
           onChange={this.props.onPasswordChange}
           onEndEditing={this.props.onEndPasswordEditing}
-          onSubmitEditing={this.props.onSubmitEditing}
-        />
+          onSubmitEditing={this.props.onSubmitPassword}
+        />      
 
-        <TouchableHighlight onPress={this.props.onLogin.bind(this)}>
-          <Image
-            style={mystyles.button}
-            source={require('./login.jpg')}
-        />
-        </TouchableHighlight>      
+         <TouchableHighlight
+         style={{width: 250, height: 50, backgroundColor: 'white'}}
+         onPress={this.props.onLogin.bind(this)}>
+         <Image
+         style={mystyles.button}
+         source={require('./login.jpg')}
+         />
+         </TouchableHighlight>         
+      </View>       
+    
 
       
-      </View>
+      
     );
   }
 

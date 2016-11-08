@@ -110,7 +110,7 @@ const UIExplorerStackReducer = StackReducer({
         // The example is already open, we should avoid pushing examples twice
         return null;
       }
-      return (state) => state || {key: action.openExample};
+      return (state) => state || {key: action.openExample, onNavigate: action.onNavigate};
     }
     return null;
   },

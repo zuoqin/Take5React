@@ -1,26 +1,3 @@
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * The examples provided by Facebook are for non-commercial testing and
- * evaluation purposes only.
- *
- * Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @providesModule UIExplorerApp
- * @flow
- */
 'use strict';
 
 const AppRegistry = require('AppRegistry');
@@ -192,15 +169,19 @@ class T5PHRMS extends React.Component {
 
   
   onLogin(){
+
+    var body = 'grant_type=password&username=' + this.username + '&password=' + this.password;
+
+    console.log('trying to login with body: ' + body);
     var settings = {
       method: "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: 'grant_type=password&username=nacho&password=password',
+      body: body,
     };      
-    fetch("http://192.168.123.145:3000/token", settings)
+    fetch("http://192.168.123.33:3000/token", settings)
       .then((response) => response.json())
       .then((responseData) => {
         this.setLoginUser(responseData);
@@ -234,7 +215,7 @@ class T5PHRMS extends React.Component {
     const index = stack.routes.length <= 1 ?  1 : stack.index;
     
     if (stack && stack.routes[index]) {
-      const {key} = stack.routes[index];
+      const {key, onNavigate} = stack.routes[index];
       const ExampleModule = UIExplorerList.Modules[key];
       return (
         <View style={styles.container}>
@@ -247,6 +228,7 @@ class T5PHRMS extends React.Component {
           />
           <UIExplorerExampleContainer
             module={ExampleModule}
+            onNavigate = {onNavigate}
             ref={(example) => { this._exampleRef = example; }}
           />
         </View>
@@ -281,8 +263,23 @@ class T5PHRMS extends React.Component {
           
           console.log('on login in index.android');
         }}
+        
+        onEndUserNameEditing={(event) => {
+          console.log('user name finished change');
+          var username = event.nativeEvent.text;
+          console.log(username);
 
+          this.username = username;
+        }}
 
+        onPasswordChange={(event) => {
+          console.log('password finished editing');
+          var password = event.nativeEvent.text;
+          console.log(password);
+
+          this.password = password;
+        }}
+        
         />        
       </View>)
     };

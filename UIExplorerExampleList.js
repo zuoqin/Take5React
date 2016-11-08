@@ -1,25 +1,3 @@
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * The examples provided by Facebook are for non-commercial testing and
- * evaluation purposes only.
- *
- * Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @flow
- */
 'use strict';
 
 const ListView = require('ListView');
@@ -116,14 +94,14 @@ class UIExplorerExampleList extends React.Component {
           {this._renderTitleRow()}
           {this._renderTextInput()}
           <ListView
-          style={styles.list}
-          dataSource={dataSource}
-          renderRow={this._renderExampleRow.bind(this)}
-          renderSectionHeader={this._renderSectionHeader}
-          enableEmptySections={true}
-          keyboardShouldPersistTaps={true}
-          automaticallyAdjustContentInsets={false}
-          keyboardDismissMode='on-drag'
+            style={styles.list}
+            dataSource={dataSource}
+            renderRow={this._renderExampleRow.bind(this)}
+            renderSectionHeader={this._renderSectionHeader}
+            enableEmptySections={true}
+            keyboardShouldPersistTaps={true}
+            automaticallyAdjustContentInsets={false}
+            keyboardDismissMode='on-drag'
           />
           </View>
     }
@@ -265,7 +243,7 @@ class UIExplorerExampleList extends React.Component {
           'authorization': bearer,
         },      
       };      
-      fetch("http://192.168.123.145:3000/api/sysmenu2", settings)
+      fetch("http://192.168.123.33:3000/api/sysmenu2", settings)
         .then((response) => response.json())
         .then((responseData) => {
             this.setPageGetResult(responseData);
@@ -274,7 +252,7 @@ class UIExplorerExampleList extends React.Component {
         .catch((error) => {
           this._showAlert('Download', 'Download menus failed with error: ' + error.message);
           this.state.isLoading = false;
-          this.state.resultsData = this.setPageGetResult([]);//this.getDataSource([])
+          //this.state.resultsData this.setPageGetResult([]); //this.getDataSource([])
         })
     }
   }
@@ -300,7 +278,7 @@ class UIExplorerExampleList extends React.Component {
   }  
 
   _handleRowPress(exampleKey: string): void {
-    this.props.onNavigate(UIExplorerActions.ExampleAction(exampleKey));
+    this.props.onNavigate(UIExplorerActions.ExampleAction(exampleKey, this.props.onNavigate));
   }
 }
 
