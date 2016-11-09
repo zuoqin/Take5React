@@ -30,15 +30,9 @@ class UIExplorerExampleContainer extends React.Component {
   }
 
   render(): ReactElement<any> {
-    if (!this.props.module.examples) {
-      var props = {
-        onNavigate: this.props.passProps.onNavigate,
-        empname: this.props.passProps.empname,
-        empid: this.props.passProps.empid,
-        birthday: this.props.passProps.birthday
-      };
+    if (!this.props.module.examples) {      
       return <this.props.module 
-        passProps = {props}
+        passProps = {this.props.passProps}
       />
     }
 

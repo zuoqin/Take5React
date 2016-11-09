@@ -201,7 +201,7 @@ class UIExplorerExampleList extends React.Component {
           }
         }
         if(parent.menulevel !== null && parent.menulevel !== undefined && parent.menulevel !== 0){
-          menu.parent = this.changeMenuStructure(responseData, parent);
+          return this.changeMenuStructure(responseData, parent);
         }
         else {
           if(parent.menulevel !== null && parent.menulevel !== undefined && parent.menulevel === 0){

@@ -23,8 +23,8 @@ const ComponentExamples: Array<UIExplorerExample> = [
     module: require('./ListViewExample'),
   },
   {
-    key: 'ListViewGridLayoutExample',
-    module: require('./ListViewGridLayoutExample'),
+    key: 'ReportDetail',
+    module: require('./ReportDetail'),
   },
   {
     key: 'ListViewPagingExample',
@@ -35,8 +35,8 @@ const ComponentExamples: Array<UIExplorerExample> = [
     module: require('./ModalExample'),
   },
   {
-    key: 'PickerExample',
-    module: require('./PickerExample'),
+    key: 'templatelist',
+    module: require('./ContractTemplateSetup'),
   },
   {
     key: 'ProgressBarAndroidExample',
@@ -66,13 +66,10 @@ const ComponentExamples: Array<UIExplorerExample> = [
     key: 'SwitchExample',
     module: require('./SwitchExample'),
   },
+
   {
-    key: 'TextExample',
-    module: require('./TextExample'),
-  },
-  {
-    key: 'TextInputExample',
-    module: require('./TextInputExample'),
+    key: 'payrollposting',
+    module: require('./SQLReportsListView'),
   },
   {
     key: 'ToolbarAndroidExample',
@@ -94,6 +91,10 @@ const ComponentExamples: Array<UIExplorerExample> = [
     key: 'WebViewExample',
     module: require('./WebViewExample'),
   },
+  {
+    key: 'payrollcalculation',
+    module: require('./PayrollCalculation'),
+  },  
 ];
 
 const APIExamples: Array<UIExplorerExample> = [
@@ -128,10 +129,6 @@ const APIExamples: Array<UIExplorerExample> = [
   {
     key: 'ImageEditingExample',
     module: require('./ImageEditingExample'),
-  },
-  {
-    key: 'LayoutEventsExample',
-    module: require('./LayoutEventsExample'),
   },
   {
     key: 'LinkingExample',
