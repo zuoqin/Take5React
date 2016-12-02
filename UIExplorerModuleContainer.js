@@ -10,9 +10,9 @@ const View = require('View');
 const invariant = require('fbjs/lib/invariant');
 
 class UIExplorerModuleContainer extends React.Component {
-  renderExample(example, i) {
-    // Filter platform-specific examples
-    var {title, description, platform} = example;
+  renderModule(module, i) {
+    // Filter platform-specific modules
+    var {title, description, platform} = module;
     if (platform) {
       if (Platform.OS !== platform) {
         return null;
@@ -24,13 +24,13 @@ class UIExplorerModuleContainer extends React.Component {
         key={i}
         title={title}
         description={description}>
-        {example.render()}
+        {module.render()}
       </UIExplorerBlock>
     );
   }
 
   render(): ReactElement<any> {
-    if (!this.props.module.examples) {      
+    if (!this.props.module.modules) {      
       return <this.props.module 
         passProps = {this.props.passProps}
       />
@@ -38,7 +38,7 @@ class UIExplorerModuleContainer extends React.Component {
 
     return (
       <UIExplorerPage title={this.props.title}>
-        {this.props.module.examples.map(this.renderExample)}
+        {this.props.module.modules.map(this.renderModule)}
       </UIExplorerPage>
     );
   }
