@@ -10,8 +10,8 @@ const React = require('react');
 const StatusBar = require('StatusBar');
 const StyleSheet = require('StyleSheet');
 const ToolbarAndroid = require('ToolbarAndroid');
-const UIExplorerExampleContainer = require('./UIExplorerExampleContainer');
-const UIExplorerExampleList = require('./UIExplorerExampleList');
+const UIExplorerModuleContainer = require('./UIExplorerModuleContainer');
+const UIExplorerModulesList = require('./UIExplorerModulesList');
 const UIExplorerList = require('./UIExplorerList');
 const UIExplorerNavigationReducer = require('./UIExplorerNavigationReducer');
 const UIExplorerStateTitleMap = require('./UIExplorerStateTitleMap');
@@ -30,11 +30,11 @@ UIManager.setLayoutAnimationEnabledExperimental(true);
 const DRAWER_WIDTH_LEFT = 56;
 
 type Props = {
-  exampleFromAppetizeParams: string,
+  appFromAppetizeParams: string,
 };
 
 type State = UIExplorerNavigationState & {
-  externalExample: ?string,
+  externalModule: ?string,
 };
 
 class T5PHRMS extends React.Component {
@@ -58,9 +58,9 @@ class T5PHRMS extends React.Component {
       AsyncStorage.removeItem('UIExplorerAppState');
       //AsyncStorage.setItem('UIExplorerAppState', JSON.stringify({isLoggedIn: false}));
       AsyncStorage.getItem('UIExplorerAppState', (err, storedString) => {
-        const exampleAction = URIActionMap(this.props.exampleFromAppetizeParams);
+        const moduleAction = URIActionMap(this.props.appFromAppetizeParams);
         const urlAction = URIActionMap(url);
-        const launchAction = exampleAction || urlAction;
+        const launchAction = moduleAction || urlAction;
         if (err || !storedString) {
           const initialAction = launchAction || {type: 'InitialAction'};
      
@@ -125,7 +125,7 @@ class T5PHRMS extends React.Component {
       return(
         <View style={styles.drawerContentWrapper}>
           
-          <UIExplorerExampleList
+          <UIExplorerModulesList
             isLoggedIn={this.state.isLoggedIn}
             token = {this.state.token}
             list={UIExplorerList}
@@ -198,17 +198,17 @@ class T5PHRMS extends React.Component {
   
   _renderApp() {
     const {
-      externalExample,
+      externalModule,
       stack,
     } = this.state;
-    if (externalExample) {
-      const Component = UIExplorerList.Modules[externalExample];
+    if (externalModule) {
+      const Component = UIExplorerList.Modules[externalModule];
       return (
         <Component
-          onExampleExit={() => {
+          onModuleExit={() => {
             this._handleAction({ type: 'BackAction' });
           }}
-          ref={(example) => { this._exampleRef = example; }}
+          ref={(t5pmodule) => { this._moduleRef = t5pmodule; }}
         />
       );
     }
@@ -217,7 +217,7 @@ class T5PHRMS extends React.Component {
     
     if (stack && stack.routes[index]) {
       const {key, passProps} = stack.routes[index];
-      const ExampleModule = UIExplorerList.Modules[key];
+      const T5PModule = UIExplorerList.Modules[key];
       return (
         <View style={styles.container}>
           <ToolbarAndroid
@@ -227,10 +227,10 @@ class T5PHRMS extends React.Component {
             style={styles.toolbar}
             title={title}
           />
-          <UIExplorerExampleContainer
-            module={ExampleModule}
+          <UIExplorerModuleContainer
+            module={T5PModule}
             passProps = {passProps}
-            ref={(example) => { this._exampleRef = example; }}
+            ref={(t5pmodule) => { this._moduleRef = t5pmodule; }}
           />
         </View>
       );
@@ -246,7 +246,7 @@ class T5PHRMS extends React.Component {
             style={styles.toolbar}
             title={title}
           />
-        <UIExplorerExampleList
+        <UIExplorerModulesList
         isLoggedIn={this.state.isLoggedIn}
         token = {this.state.token}
         onNavigate={this._handleAction}
@@ -308,9 +308,9 @@ class T5PHRMS extends React.Component {
       return true;
     }
     if (
-      this._exampleRef &&
-      this._exampleRef.handleBackAction &&
-      this._exampleRef.handleBackAction()
+      this._moduleRef &&
+      this._moduleRef.handleBackAction &&
+      this._moduleRef.handleBackAction()
     ) {
       return true;
     }

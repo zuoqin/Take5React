@@ -38,7 +38,7 @@ const {
 import type {NavigationState} from 'NavigationTypeDefinition';
 
 export type UIExplorerNavigationState = {
-  externalExample: ?string;
+  externalModule: ?string;
   stack: NavigationState;
 };
 
@@ -103,14 +103,14 @@ function StackReducer({initialState, getReducerForState, getPushedReducerForActi
 
 const UIExplorerStackReducer = StackReducer({
   getPushedReducerForAction: (action, lastState) => {
-    if (action.type === 'UIExplorerExampleAction' && 
+    if (action.type === 'UIExplorerModuleAction' && 
       UIExplorerList.Modules !== undefined &&
-      UIExplorerList.Modules[action.openExample]) {
-      if (lastState.routes.find(route => route.key === action.openExample)) {
+      UIExplorerList.Modules[action.openModule]) {
+      if (lastState.routes.find(route => route.key === action.openModule)) {
         // The example is already open, we should avoid pushing examples twice
         return null;
       }
-      return (state) => state || {key: action.openExample, passProps: action.passProps};
+      return (state) => state || {key: action.openModule, passProps: action.passProps};
     }
     return null;
   },
@@ -127,13 +127,13 @@ const UIExplorerStackReducer = StackReducer({
 function UIExplorerNavigationReducer(lastState: ?UIExplorerNavigationState, action: any): UIExplorerNavigationState {
   if (!lastState) {
     return {
-      externalExample: null,
+      externalModule: null,
       stack: UIExplorerStackReducer(null, action),
     };
   }
   if (action.type === 'UIExplorerListWithFilterAction') {
     return {
-      externalExample: null,
+      externalModule: null,
       stack: {
         key: 'UIExplorerMainStack',
         index: 0,
@@ -146,25 +146,25 @@ function UIExplorerNavigationReducer(lastState: ?UIExplorerNavigationState, acti
       },
     };
   }
-  if (action.type === 'BackAction' && lastState.externalExample) {
+  if (action.type === 'BackAction' && lastState.externalModule) {
     return {
       ...lastState,
-      externalExample: null,
+      externalModule: null,
     };
   }
-  if (action.type === 'UIExplorerExampleAction' && UIExplorerList.Modules !== undefined) {
-    const ExampleModule = UIExplorerList.Modules[action.openExample];
-    if (ExampleModule && ExampleModule.external) {
+  if (action.type === 'UIExplorerModuleAction' && UIExplorerList.Modules !== undefined) {
+    const OpenModule = UIExplorerList.Modules[action.openModule];
+    if (OpenModule && OpenModule.external) {
       return {
         ...lastState,
-        externalExample: action.openExample,
+        externalModule: action.openModule,
       };
     }
   }
   const newStack = UIExplorerStackReducer(lastState.stack, action);
   if (newStack !== lastState.stack) {
     return {
-      externalExample: null,
+      externalModule: null,
       stack: newStack,
     };
   }

@@ -180,7 +180,7 @@ function createAppNavigationContainer(ComponentClass) {
 class YourApplication extends Component {
 
   static propTypes = {
-    onExampleExit: PropTypes.func,
+    onModuleExit: PropTypes.func,
   };
 
   // This sets up the initial navigation state.
@@ -213,9 +213,9 @@ class YourApplication extends Component {
   // state.
   _navigate(action: Object): void {
     if (action.type === 'exit') {
-      // Exits the example. `this.props.onExampleExit` is provided
+      // Exits the example. `this.props.onModuleExit` is provided
       // by the UI Explorer.
-      this.props.onExampleExit && this.props.onExampleExit();
+      this.props.onModuleExit && this.props.onModuleExit();
       return;
     }
 

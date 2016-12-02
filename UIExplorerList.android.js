@@ -1,11 +1,11 @@
 'use strict';
 
-export type UIExplorerExample = {
+export type UIExplorerModule = {
   key: string,
   module: Object,
 };
 
-const ComponentExamples: Array<UIExplorerExample> = [
+const ComponentExamples: Array<UIExplorerModule> = [
   {
     key: 'newemplist',
     module: require('./NewEmployees'),
@@ -97,7 +97,7 @@ const ComponentExamples: Array<UIExplorerExample> = [
   },  
 ];
 
-const APIExamples: Array<UIExplorerExample> = [
+const APIExamples: Array<UIExplorerModule> = [
   {
     key: 'AccessibilityAndroidExample',
     module: require('./AccessibilityAndroidExample'),

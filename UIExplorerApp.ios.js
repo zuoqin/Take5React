@@ -28,8 +28,8 @@ const Linking = require('Linking');
 const React = require('react');
 const ReactNative = require('react-native');
 const UIExplorerList = require('./UIExplorerList.ios');
-const UIExplorerExampleContainer = require('./UIExplorerExampleContainer');
-const UIExplorerExampleList = require('./UIExplorerExampleList');
+const UIExplorerModuleContainer = require('./UIExplorerModuleContainer');
+const UIExplorerModulesList = require('./UIExplorerModulesList');
 const UIExplorerNavigationReducer = require('./UIExplorerNavigationReducer');
 const UIExplorerStateTitleMap = require('./UIExplorerStateTitleMap');
 const URIActionMap = require('./URIActionMap');
@@ -54,11 +54,11 @@ import type { UIExplorerNavigationState } from './UIExplorerNavigationReducer';
 import type { UIExplorerExample } from './UIExplorerList.ios';
 
 type Props = {
-  exampleFromAppetizeParams: string,
+  appFromAppetizeParams: string,
 };
 
 type State = UIExplorerNavigationState & {
-  externalExample?: string,
+  externalModule?: string,
 };
 
 const APP_STATE_KEY = 'UIExplorerAppState.v1';
@@ -87,9 +87,9 @@ class UIExplorerApp extends React.Component {
   componentDidMount() {
     Linking.getInitialURL().then((url) => {
       AsyncStorage.getItem(APP_STATE_KEY, (err, storedString) => {
-        const exampleAction = URIActionMap(this.props.exampleFromAppetizeParams);
+        const moduleAction = URIActionMap(this.props.appFromAppetizeParams);
         const urlAction = URIActionMap(url);
-        const launchAction = exampleAction || urlAction;
+        const launchAction = moduleAction || urlAction;
         if (err || !storedString) {
           const initialAction = launchAction || {type: 'InitialAction'};
           this.setState(UIExplorerNavigationReducer(null, initialAction));
@@ -124,11 +124,11 @@ class UIExplorerApp extends React.Component {
     if (!this.state) {
       return null;
     }
-    if (this.state.externalExample) {
-      const Component = UIExplorerList.Modules[this.state.externalExample];
+    if (this.state.externalModule) {
+      const Component = UIExplorerList.Modules[this.state.externalModule];
       return (
         <Component
-          onExampleExit={() => {
+          onModuleExit={() => {
             this._handleAction({ type: 'BackAction' });
           }}
         />
@@ -167,7 +167,7 @@ class UIExplorerApp extends React.Component {
     const state = props.scene.route;
     if (state.key === 'AppList') {
       return (
-        <UIExplorerExampleList
+        <UIExplorerModulesList
           onNavigate={this._handleAction}
           list={UIExplorerList}
           style={styles.exampleContainer}
@@ -180,7 +180,7 @@ class UIExplorerApp extends React.Component {
     if (Example) {
       return (
         <View style={styles.exampleContainer}>
-          <UIExplorerExampleContainer module={Example} />
+          <UIExplorerModuleContainer module={Example} />
         </View>
       );
     }
@@ -209,7 +209,7 @@ UIExplorerList.ComponentExamples.concat(UIExplorerList.APIExamples).forEach((Exa
       render() {
         return (
           <SnapshotViewIOS>
-            <UIExplorerExampleContainer module={ExampleModule} />
+            <UIExplorerModuleContainer module={ExampleModule} />
           </SnapshotViewIOS>
         );
       }

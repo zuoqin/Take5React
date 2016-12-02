@@ -94,10 +94,10 @@ class YourApplication extends React.Component {
     }
   }
 
-  // Exits the example. `this.props.onExampleExit` is provided
+  // Exits the example. `this.props.onModuleExit` is provided
   // by the UI Explorer.
   _exit(): void {
-    this.props.onExampleExit && this.props.onExampleExit();
+    this.props.onModuleExit && this.props.onModuleExit();
   }
 
   // This public method is optional. If exists, the UI explorer will call it

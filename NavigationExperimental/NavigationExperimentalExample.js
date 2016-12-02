@@ -74,11 +74,11 @@ class NavigationExperimentalExample extends React.Component {
 
   _renderMenu = () => {
     let exitRow = null;
-    if (this.props.onExampleExit) {
+    if (this.props.onModuleExit) {
       exitRow = (
         <NavigationExampleRow
           text="Exit Navigation Examples"
-          onPress={this.props.onExampleExit}
+          onPress={this.props.onModuleExit}
         />
       );
     }
@@ -110,9 +110,9 @@ class NavigationExperimentalExample extends React.Component {
 
   handleBackAction = () => {
     const wasHandledByExample = (
-      this.exampleRef &&
-      this.exampleRef.handleBackAction &&
-      this.exampleRef.handleBackAction()
+      this.moduleRef &&
+      this.moduleRef.handleBackAction &&
+      this.moduleRef.handleBackAction()
     );
     if (wasHandledByExample) {
       return true;
@@ -132,8 +132,8 @@ class NavigationExperimentalExample extends React.Component {
       const Component = EXAMPLES[this.state.example];
       return (
         <Component
-          onExampleExit={this._exitInnerExample}
-          ref={exampleRef => { this.exampleRef = exampleRef; }}
+          onModuleExit={this._exitInnerExample}
+          ref={moduleRef => { this.moduleRef = moduleRef; }}
         />
       );
     }

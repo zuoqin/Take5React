@@ -95,9 +95,9 @@ class Example extends Component {
 
   _navigate(action: any): boolean {
     if (action === 'exit') {
-      // Exits the example. `this.props.onExampleExit` is provided
+      // Exits the example. `this.props.onModuleExit` is provided
       // by the UI Explorer.
-      this.props.onExampleExit && this.props.onExampleExit();
+      this.props.onModuleExit && this.props.onModuleExit();
       return false;
     }
 

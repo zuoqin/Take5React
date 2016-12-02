@@ -59,7 +59,7 @@ class NavigatorIOSColors extends React.Component {
           rightButtonTitle: 'Done',
           onRightButtonPress: () => {
             StatusBar.setBarStyle('default');
-            this.props.onExampleExit();
+            this.props.onModuleExit();
           },
           passProps: {
             text: 'The nav bar has custom colors with tintColor, ' +

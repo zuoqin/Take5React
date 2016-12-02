@@ -212,7 +212,7 @@ class NewEmployeesListView extends Component {
       birthday: employeeItem.birthday,
       empname: employeeItem.empname
     }
-    this.props.passProps.onNavigate(UIExplorerActions.ExampleAction('NewEmployeeDetail', props));
+    this.props.passProps.onNavigate(UIExplorerActions.ModuleAction('NewEmployeeDetail', props));
   };
 
   _showAlert(title, message) {

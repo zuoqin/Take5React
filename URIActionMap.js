@@ -41,7 +41,7 @@ function PathActionMap(path: string): ?Object {
       Alert.alert(`${exampleKey} example could not be found!`);
       return null;
     }
-    return UIExplorerActions.ExampleAction(exampleKey);
+    return UIExplorerActions.ModuleAction(exampleKey);
   }
   return null;
 }

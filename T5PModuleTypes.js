@@ -18,27 +18,21 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * @providesModule createExamplePage
+ * @providesModule T5PModuleTypes
  * @flow
  */
 'use strict';
 
-const React = require('react');
-
-const UIExplorerModuleContainer = require('./UIExplorerModuleContainer');
-
-import type { Example, ExampleModule } from 'ExampleTypes';
-
-var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
-  : ReactClass<any> {
-
-  class ExamplePage extends React.Component {
-    render() {
-      return <UIExplorerModuleContainer module={exampleModule} title={title} />;
-    }
-  }
-
-  return ExamplePage;
+export type T5PModuleSpec = {
+  title: string,
+  render: () => ?ReactElement<any>,
+  description?: string,
+  platform?: string;
 };
 
-module.exports = createExamplePage;
+export type T5PModule = {
+  title: string;
+  description: string;
+  t5pmodules: Array<T5PModuleSpec>;
+  external?: bool;
+};

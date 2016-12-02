@@ -27,32 +27,32 @@ export type UIExplorerListWithFilterAction = {
   filter: ?string;
 };
 
-export type UIExplorerExampleAction = {
-  type: 'UIExplorerExampleAction',
-  openExample: string,
+export type UIExplorerModuleAction = {
+  type: 'UIExplorerModuleAction',
+  openModule: string,
   onNavigate: Function;
 };
 
-export type UIExplorerAction = UIExplorerListWithFilterAction | UIExplorerExampleAction;
+export type UIExplorerAction = UIExplorerListWithFilterAction | UIExplorerModuleAction;
 
-function ExampleListWithFilter(filter: ?string): UIExplorerListWithFilterAction {
+function ModuleListWithFilter(filter: ?string): UIExplorerListWithFilterAction {
   return {
     type: 'UIExplorerListWithFilterAction',
     filter,
   };
 }
 
-function ExampleAction(openExample: string, passProps): UIExplorerExampleAction {
+function ModuleAction(openModule: string, passProps): UIExplorerModuleAction {
   return {
-    type: 'UIExplorerExampleAction',
-    openExample,
+    type: 'UIExplorerModuleAction',
+    openModule,
     passProps,
   };
 }
 
 const UIExplorerActions = {
-  ExampleListWithFilter,
-  ExampleAction,
+  ModuleListWithFilter,
+  ModuleAction,
 };
 
 module.exports = UIExplorerActions;

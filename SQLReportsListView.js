@@ -215,7 +215,7 @@ class SQLReportsListView extends Component {
       url: reportItem.url,      
       name: reportItem.name
     }
-    this.props.passProps.onNavigate(UIExplorerActions.ExampleAction('ReportDetail', props));
+    this.props.passProps.onNavigate(UIExplorerActions.ModuleAction('ReportDetail', props));
   };
 
   _showAlert(title, message) {

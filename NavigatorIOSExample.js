@@ -158,7 +158,7 @@ class NavigatorIOSExamplePage extends React.Component {
           {this._renderReplace()}
           {this._renderReplacePrevious()}
           {this._renderReplacePreviousAndPop()}
-          {this._renderRow('Exit NavigatorIOS Example', this.props.onExampleExit)}
+          {this._renderRow('Exit NavigatorIOS Example', this.props.onModuleExit)}
         </View>
         <View style={styles.line}/>
       </ScrollView>
@@ -241,14 +241,14 @@ class NavigatorIOSExample extends React.Component {
   static external = true;
 
   render() {
-    const {onExampleExit} = this.props;
+    const {onModuleExit} = this.props;
     return (
       <NavigatorIOS
         style={styles.container}
         initialRoute={{
           title: NavigatorIOSExample.title,
           component: NavigatorIOSExamplePage,
-          passProps: {onExampleExit},
+          passProps: {onModuleExit},
         }}
         tintColor="#008888"
       />
